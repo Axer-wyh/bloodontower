@@ -1,0 +1,10 @@
+{
+  "name": "bloodontower",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Blood on the Clocktower mini program scaffold for Trouble Brewing MVP.",
+  "scripts": {
+    "test": "node --test"
+  }
+}
+

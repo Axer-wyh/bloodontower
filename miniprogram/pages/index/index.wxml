@@ -1,0 +1,23 @@
+<view class="page-shell">
+  <view class="hero-card">
+    <view class="pill">v0.1 骨架</view>
+    <view class="hero-title">血染钟楼</view>
+    <view class="hero-subtitle">
+      原生微信小程序骨架，围绕暗流涌动构建内容索引、主持辅助、玩家私密面板与 AI 说书人协议。
+    </view>
+  </view>
+
+  <view class="section-title">进入模块</view>
+  <view class="grid-links">
+    <navigator
+      wx:for="{{navs}}"
+      wx:key="url"
+      class="nav-card"
+      url="{{item.url}}"
+    >
+      <view class="nav-card-title">{{item.title}}</view>
+      <view class="nav-card-desc">{{item.desc}}</view>
+    </navigator>
+  </view>
+</view>
+

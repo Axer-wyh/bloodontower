@@ -1,0 +1,29 @@
+<view class="page-shell">
+  <view class="hero-card">
+    <view class="pill">文字占位图标</view>
+    <view class="hero-title">角色索引</view>
+    <view class="hero-subtitle">
+      当前仅保留官方角色资料的结构化字段与来源链接。`role_icon_key` 已预留，授权前只渲染中性占位。
+    </view>
+  </view>
+
+  <view wx:for="{{roles}}" wx:key="id" class="panel-card list-card">
+    <view class="row">
+      <view class="row">
+        <view class="role-chip">{{item.iconFallbackText}}</view>
+        <view class="stack">
+          <view class="nav-card-title">{{item.name}}</view>
+          <view class="muted small">{{item.nameEn}} / {{item.roleTypeLabel}}</view>
+        </view>
+      </view>
+      <view class="pill">{{item.alignmentLabel}}</view>
+    </view>
+    <view class="nav-card-desc">{{item.abilitySummary}}</view>
+    <view class="tag-row">
+      <view class="tag">icon: {{item.roleIconKey}}</view>
+      <view class="tag">夜序: {{item.wakeLabel}}</view>
+    </view>
+    <view class="muted small">来源：{{item.sourceLink}}</view>
+  </view>
+</view>
+

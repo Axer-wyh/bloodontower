@@ -1,0 +1,20 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/script/index",
+    "pages/roles/index",
+    "pages/room/index",
+    "pages/host/index",
+    "pages/player/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "血染钟楼",
+    "navigationBarBackgroundColor": "#0f172a",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#f4efe5",
+    "backgroundTextStyle": "light"
+  },
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents"
+}
+

@@ -1,0 +1,16 @@
+{
+  "description": "Blood on the Clocktower mini program scaffold",
+  "appid": "touristappid",
+  "projectname": "bloodontower",
+  "miniprogramRoot": "miniprogram/",
+  "cloudfunctionRoot": "cloudfunctions/",
+  "compileType": "miniprogram",
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": false
+  }
+}
+

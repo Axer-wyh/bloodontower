@@ -1,0 +1,36 @@
+<view class="page-shell">
+  <view class="hero-card">
+    <view class="pill">主持台</view>
+    <view class="hero-title">全量状态</view>
+    <view class="hero-subtitle">
+      主持视角可见身份、私密消息、夜序与 AI 决策上下文。当前为本地示例数据。
+    </view>
+  </view>
+
+  <view class="section-title">夜序队列</view>
+  <view wx:for="{{room.pendingNightQueue}}" wx:key="queueId" class="panel-card list-card">
+    <view class="row">
+      <view class="nav-card-title">{{item.order}}. {{item.playerName}}</view>
+      <view class="pill">{{item.roleName}}</view>
+    </view>
+    <view class="nav-card-desc">{{item.intentLabel}}</view>
+  </view>
+
+  <view class="section-title">提名与投票</view>
+  <view wx:for="{{room.nominations}}" wx:key="nominationId" class="panel-card list-card">
+    <view class="nav-card-title">{{item.nominatorName}} 提名 {{item.targetName}}</view>
+    <view class="nav-card-desc">
+      票数 {{item.voteCount}} / 通过：{{item.passed ? "是" : "否"}} / 原因：{{item.reason}}
+    </view>
+  </view>
+
+  <view class="section-title">AI 上下文摘要</view>
+  <view class="panel-card list-card">
+    <view class="nav-card-title">当前任务</view>
+    <view class="nav-card-desc">{{aiContext.taskSummary}}</view>
+    <view class="tag-row">
+      <view wx:for="{{aiContext.constraints}}" wx:key="*this" class="tag">{{item}}</view>
+    </view>
+  </view>
+</view>
+

@@ -1,0 +1,25 @@
+<view class="page-shell">
+  <view class="hero-card">
+    <view class="pill">邀请码 {{room.roomId}}</view>
+    <view class="hero-title">{{room.scriptName}}</view>
+    <view class="hero-subtitle">
+      状态：{{room.statusLabel}} · 阶段：{{room.phaseLabel}} · 第 {{room.day}} 天
+    </view>
+  </view>
+
+  <view class="section-title">玩家</view>
+  <view wx:for="{{room.players}}" wx:key="playerId" class="panel-card list-card">
+    <view class="row">
+      <view class="nav-card-title">{{item.seat}} 号 {{item.name}}</view>
+      <view class="pill">{{item.isAlive ? "存活" : "死亡"}}</view>
+    </view>
+    <view class="nav-card-desc">阵营对主持可见：{{item.alignmentLabel}} / 角色：{{item.visibleRoleName}}</view>
+  </view>
+
+  <view class="section-title">公开日志</view>
+  <view wx:for="{{room.publicLog}}" wx:key="logId" class="timeline-item">
+    <view class="nav-card-title">{{item.title}}</view>
+    <view class="muted small">{{item.message}}</view>
+  </view>
+</view>
+

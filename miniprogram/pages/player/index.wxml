@@ -1,0 +1,31 @@
+<view class="page-shell">
+  <view class="hero-card">
+    <view class="pill">玩家私密面板</view>
+    <view class="hero-title">{{player.displayRoleName}}</view>
+    <view class="hero-subtitle">
+      {{player.playerName}} · {{player.alignmentLabel}} · 仅展示你当前可见的信息。
+    </view>
+  </view>
+
+  <view class="section-title">首夜/夜间消息</view>
+  <view wx:for="{{player.nightMessages}}" wx:key="messageId" class="panel-card list-card">
+    <view class="nav-card-title">{{item.title}}</view>
+    <view class="nav-card-desc">{{item.body}}</view>
+  </view>
+
+  <view class="section-title">你知道的信息</view>
+  <view wx:for="{{player.knownPlayers}}" wx:key="playerId" class="panel-card list-card">
+    <view class="row">
+      <view class="nav-card-title">{{item.playerName}}</view>
+      <view class="pill">{{item.reason}}</view>
+    </view>
+    <view class="nav-card-desc">{{item.summary}}</view>
+  </view>
+
+  <view class="section-title">公开日志</view>
+  <view wx:for="{{room.publicLog}}" wx:key="logId" class="timeline-item">
+    <view class="nav-card-title">{{item.title}}</view>
+    <view class="muted small">{{item.message}}</view>
+  </view>
+</view>
+
