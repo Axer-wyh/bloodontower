@@ -1,5 +1,5 @@
 const cloud = require("wx-server-sdk");
-const { joinManagedRoom, buildRoomView } = require("../../packages/domain/src");
+const { buildRoomView } = require("../../packages/domain/src");
 
 cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV,
@@ -10,9 +10,8 @@ const rooms = db.collection("rooms");
 
 exports.main = async function main(event) {
   const context = cloud.getWXContext();
-  const playerId = context.OPENID;
+  const viewerId = context.OPENID;
   const roomId = event.roomId;
-  const playerName = event.name || "玩家";
 
   if (!roomId) {
     throw new Error("roomId is required.");
@@ -20,27 +19,13 @@ exports.main = async function main(event) {
 
   const snapshot = await rooms.doc(roomId).get();
   const room = snapshot.data;
-  joinManagedRoom(room, {
-    playerId: playerId,
-    name: playerName,
-  });
-
-  await rooms.doc(roomId).update({
-    data: sanitizeForWrite(room),
-  });
 
   return {
     ok: true,
     roomId: roomId,
     view: buildRoomView(room, {
-      viewerId: playerId,
+      viewerId: viewerId,
     }),
   };
 };
 
-function sanitizeForWrite(room) {
-  const next = Object.assign({}, room);
-  delete next._id;
-  delete next._openid;
-  return next;
-}

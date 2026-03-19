@@ -1,36 +1,94 @@
 <view class="page-shell">
   <view class="hero-card">
     <view class="pill">主持台</view>
-    <view class="hero-title">全量状态</view>
+    <view class="hero-title">{{room ? room.scriptName : "全量状态"}}</view>
     <view class="hero-subtitle">
-      主持视角可见身份、私密消息、夜序与 AI 决策上下文。当前为本地示例数据。
+      主持视角会直接读取云端房间文档，并返回全量身份、夜序、提名投票和 AI 决策上下文。
+    </view>
+  </view>
+
+  <view class="panel-card form-card">
+    <view class="nav-card-title">主持动作</view>
+    <view class="button-row">
+      <button wx:if="{{room && room.status === 'lobby'}}" class="button-primary" loading="{{loading}}" bindtap="startGame">随机发牌并开局</button>
+      <button wx:if="{{room && room.status !== 'lobby'}}" class="button-primary" loading="{{loading}}" bindtap="advancePhase">推进阶段</button>
+      <button class="button-secondary" bindtap="refreshRoom">刷新</button>
+    </view>
+    <view wx:if="{{error}}" class="error-box">{{error}}</view>
+  </view>
+
+  <view wx:if="{{room}}" class="panel-card form-card">
+    <view class="nav-card-title">创建提名</view>
+    <view class="form-field">
+      <text class="form-label">提名者席位</text>
+      <input class="input" type="number" value="{{nominationNominatorSeat}}" data-field="nominationNominatorSeat" bindinput="updateField" />
+    </view>
+    <view class="form-field">
+      <text class="form-label">目标席位</text>
+      <input class="input" type="number" value="{{nominationTargetSeat}}" data-field="nominationTargetSeat" bindinput="updateField" />
+    </view>
+    <view class="form-field">
+      <text class="form-label">原因</text>
+      <input class="input" value="{{nominationReason}}" data-field="nominationReason" bindinput="updateField" />
+    </view>
+    <view class="button-row">
+      <button class="button-secondary" loading="{{loading}}" bindtap="createNomination">记录提名</button>
     </view>
   </view>
 
   <view class="section-title">夜序队列</view>
-  <view wx:for="{{room.pendingNightQueue}}" wx:key="queueId" class="panel-card list-card">
-    <view class="row">
-      <view class="nav-card-title">{{item.order}}. {{item.playerName}}</view>
-      <view class="pill">{{item.roleName}}</view>
+  <view wx:if="{{room && room.pendingNightQueue.length}}">
+    <view wx:for="{{room.pendingNightQueue}}" wx:key="queueId" class="panel-card list-card">
+      <view class="row">
+        <view class="nav-card-title">{{item.order}}. {{item.playerName}}</view>
+        <view class="pill">{{item.roleName}}</view>
+      </view>
+      <view class="nav-card-desc">{{item.intentLabel}}</view>
     </view>
-    <view class="nav-card-desc">{{item.intentLabel}}</view>
+  </view>
+  <view wx:else class="panel-card empty-box">当前阶段没有待执行夜序。</view>
+
+  <view class="section-title">玩家</view>
+  <view wx:if="{{room}}">
+    <view wx:for="{{room.players}}" wx:key="playerId" class="panel-card list-card">
+      <view class="row">
+        <view class="nav-card-title">{{item.seat}} 号 {{item.name}}</view>
+        <view class="pill">{{item.isAlive ? "存活" : "死亡"}}</view>
+      </view>
+      <view class="nav-card-desc">{{item.alignmentLabel}} / {{item.visibleRoleName}}</view>
+    </view>
   </view>
 
   <view class="section-title">提名与投票</view>
-  <view wx:for="{{room.nominations}}" wx:key="nominationId" class="panel-card list-card">
-    <view class="nav-card-title">{{item.nominatorName}} 提名 {{item.targetName}}</view>
-    <view class="nav-card-desc">
-      票数 {{item.voteCount}} / 通过：{{item.passed ? "是" : "否"}} / 原因：{{item.reason}}
+  <view wx:if="{{room && room.nominations.length}}">
+    <view class="panel-card form-card">
+      <view class="form-field">
+        <text class="form-label">投票席位（英文逗号分隔）</text>
+        <input class="input" value="{{voteSeats}}" data-field="voteSeats" bindinput="updateField" placeholder="例如 1,2,4,5" />
+      </view>
+    </view>
+    <view wx:for="{{room.nominations}}" wx:key="nominationId" class="panel-card list-card">
+      <view class="nav-card-title">{{item.nominatorName}} 提名 {{item.targetName}}</view>
+      <view class="nav-card-desc">
+        票数 {{item.voteCount}} / 通过：{{item.passed ? "是" : "否"}} / 原因：{{item.reason}}
+      </view>
+      <view class="button-row">
+        <button class="button-danger" loading="{{loading}}" data-nomination-id="{{item.nominationId}}" bindtap="resolveVote">按席位结算</button>
+      </view>
     </view>
   </view>
+  <view wx:else class="panel-card empty-box">还没有提名记录。</view>
 
   <view class="section-title">AI 上下文摘要</view>
-  <view class="panel-card list-card">
-    <view class="nav-card-title">当前任务</view>
+  <view wx:if="{{aiContext.taskSummary}}" class="panel-card list-card">
+    <view class="row">
+      <view class="nav-card-title">当前任务</view>
+      <view class="pill">AI</view>
+    </view>
     <view class="nav-card-desc">{{aiContext.taskSummary}}</view>
     <view class="tag-row">
       <view wx:for="{{aiContext.constraints}}" wx:key="*this" class="tag">{{item}}</view>
     </view>
   </view>
+  <view wx:else class="panel-card empty-box">当前账号不是主持，或房间还未准备好 AI 上下文。</view>
 </view>
-

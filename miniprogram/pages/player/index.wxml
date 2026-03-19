@@ -1,31 +1,86 @@
 <view class="page-shell">
   <view class="hero-card">
     <view class="pill">玩家私密面板</view>
-    <view class="hero-title">{{player.displayRoleName}}</view>
+    <view class="hero-title">{{player ? player.displayRoleName : "等待加入房间"}}</view>
     <view class="hero-subtitle">
-      {{player.playerName}} · {{player.alignmentLabel}} · 仅展示你当前可见的信息。
+      {{player ? player.playerName : "当前微信用户"}} · {{player ? player.alignmentLabel : "未识别为房间玩家"}} · 仅展示你当前可见的信息。
+    </view>
+  </view>
+
+  <view wx:if="{{error}}" class="error-box">{{error}}</view>
+
+  <view class="panel-card form-card">
+    <view class="nav-card-title">你的动作</view>
+    <view class="form-field">
+      <text class="form-label">动作意图</text>
+      <input class="input" value="{{actionIntent}}" data-field="actionIntent" bindinput="updateField" placeholder="例如 poison / investigate / custom" />
+    </view>
+    <view class="form-field">
+      <text class="form-label">目标席位（英文逗号分隔）</text>
+      <input class="input" value="{{actionTargetSeats}}" data-field="actionTargetSeats" bindinput="updateField" placeholder="例如 2,5" />
+    </view>
+    <view class="form-field">
+      <text class="form-label">补充说明</text>
+      <input class="input" value="{{actionNotes}}" data-field="actionNotes" bindinput="updateField" placeholder="给主持看的补充文本" />
+    </view>
+    <view class="button-row">
+      <button class="button-primary" loading="{{loading}}" bindtap="submitNightAction">提交夜间动作</button>
+      <button class="button-secondary" bindtap="refreshRoom">刷新</button>
+    </view>
+  </view>
+
+  <view class="panel-card form-card">
+    <view class="nav-card-title">白天提名</view>
+    <view class="form-field">
+      <text class="form-label">目标席位</text>
+      <input class="input" value="{{nominationTargetSeat}}" data-field="nominationTargetSeat" bindinput="updateField" placeholder="例如 6" />
+    </view>
+    <view class="form-field">
+      <text class="form-label">提名理由</text>
+      <input class="input" value="{{nominationReason}}" data-field="nominationReason" bindinput="updateField" />
+    </view>
+    <view class="button-row">
+      <button class="button-secondary" loading="{{loading}}" bindtap="createNomination">发起提名</button>
     </view>
   </view>
 
   <view class="section-title">首夜/夜间消息</view>
-  <view wx:for="{{player.nightMessages}}" wx:key="messageId" class="panel-card list-card">
-    <view class="nav-card-title">{{item.title}}</view>
-    <view class="nav-card-desc">{{item.body}}</view>
+  <view wx:if="{{player && player.nightMessages.length}}">
+    <view wx:for="{{player.nightMessages}}" wx:key="messageId" class="panel-card list-card">
+      <view class="nav-card-title">{{item.title}}</view>
+      <view class="nav-card-desc">{{item.body}}</view>
+    </view>
   </view>
+  <view wx:else class="panel-card empty-box">当前还没有可见的夜间消息。</view>
 
   <view class="section-title">你知道的信息</view>
-  <view wx:for="{{player.knownPlayers}}" wx:key="playerId" class="panel-card list-card">
-    <view class="row">
-      <view class="nav-card-title">{{item.playerName}}</view>
-      <view class="pill">{{item.reason}}</view>
+  <view wx:if="{{player && player.knownPlayers.length}}">
+    <view wx:for="{{player.knownPlayers}}" wx:key="playerId" class="panel-card list-card">
+      <view class="row">
+        <view class="nav-card-title">{{item.playerName}}</view>
+        <view class="pill">{{item.reason}}</view>
+      </view>
+      <view class="nav-card-desc">{{item.summary}}</view>
     </view>
-    <view class="nav-card-desc">{{item.summary}}</view>
+  </view>
+  <view wx:else class="panel-card empty-box">你目前没有额外可确认的玩家信息。</view>
+
+  <view class="section-title">玩家列表</view>
+  <view wx:if="{{room}}">
+    <view wx:for="{{room.players}}" wx:key="playerId" class="panel-card list-card">
+      <view class="row">
+        <view class="nav-card-title">{{item.seat}} 号 {{item.name}}</view>
+        <view class="pill">{{item.isAlive ? "存活" : "死亡"}}</view>
+      </view>
+      <view class="nav-card-desc">{{item.visibleRoleName}}</view>
+    </view>
   </view>
 
   <view class="section-title">公开日志</view>
-  <view wx:for="{{room.publicLog}}" wx:key="logId" class="timeline-item">
-    <view class="nav-card-title">{{item.title}}</view>
-    <view class="muted small">{{item.message}}</view>
+  <view wx:if="{{room}}">
+    <view wx:for="{{room.publicLog}}" wx:key="logId" class="timeline-item">
+      <view class="nav-card-title">{{item.title}}</view>
+      <view class="muted small">{{item.message}}</view>
+    </view>
   </view>
 </view>
-
